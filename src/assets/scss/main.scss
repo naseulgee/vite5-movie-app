@@ -1,0 +1,183 @@
+// 폰트 설정
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Roboto:wght@100;300;400;500;700;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+// NOTE: 부트스트랩 호출 전 변수값 재정의
+// ★ 순서가 중요하다
+// [참고] https://getbootstrap.com/docs/5.0/customize/sass/#variable-defaults
+
+// 변수 재정의
+$primary: #fdc000;
+$font-family-sans-serif: "Pretendard Variable", Pretendard, Poppins, Roboto, -apple-system, BlinkMacSystemFont, system-ui, "Noto Sans KR", sans-serif;
+$font-weight-lighter:    200;
+$font-weight-light:      400;
+$font-weight-normal:     500;
+$font-weight-medium:     600;
+$font-weight-semibold:   700;
+$font-weight-bold:       800;
+$font-weight-bolder:     900;
+$spacer: 50px;
+
+// 필수 모듈 호출
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables"; // 해당 파일에 작성된 변수를 재정의할 수 있다.
+@import "../../../node_modules/bootstrap/scss/mixins";
+
+
+// 그 외 모듈 호출
+
+// NOTE: 부트스트랩 기본 스타일 불러오기
+// [참고] https://getbootstrap.com/docs/5.0/getting-started/introduction/
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+
+// 커스텀 변수 선언
+$headerH: 75px;
+$footerH: 113px;
+$vh-H   : calc(100vh - $headerH);
+$vh-HF  : calc(100vh - $headerH - $footerH);
+/* s: 폰트 */
+.hand-writing {
+    font-family: "Caveat", cursive;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+.text-outline {
+    color: #0003;
+    font-family: "Poppins", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    -webkit-text-stroke: 1px $white;
+}
+[class^="ellipsis"]{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    &.ellipsis-1{
+        -webkit-line-clamp: 1;
+    }
+    &.ellipsis-2{
+        -webkit-line-clamp: 2;
+    }
+    &.ellipsis-3{
+        -webkit-line-clamp: 3;
+    }
+}
+/* e: 폰트 */
+/* s: 호버 박스 */
+.hover-box{
+    display: block;
+    border-radius: 1.5em;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    transition: $transition-base;
+    z-index: 1;
+    &::before{ /* + MORE 버튼 */
+        content: '+\AMORE';
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5em;
+        height: 5em;
+        padding: 0.4em;
+        border: 0.2em solid $white;
+        border-radius: 100%;
+        overflow: hidden;
+        background-color: transparentize($primary, 0.2);
+        box-shadow: 10px 10px 25px transparentize($black, 0.55) !important;
+        color: $white;
+        opacity: 0;
+        text-align: center;
+        line-height: 1.2;
+        white-space: pre; // \A 를 통한 줄바꿈
+        position: absolute;
+        left: 50%;
+        bottom: 40%;
+        z-index: 3;
+        transform: translate(-50%, 50%);
+        transition: $transition-base;
+    }
+    &::after{ /* 배경 어둡게 */
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+                to bottom,
+                transparentize(darken($primary, 12%), 1),
+                $primary);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        transition: $transition-base;
+    }
+    img{
+        object-fit: cover;
+        transition: 5s;
+    }
+    .hover-box-info{
+        display: flex;
+        flex-wrap: wrap;
+        align-content: end;
+        width: 100%;
+        height: 50%;
+        padding: map-get($spacers, 1);
+        background: linear-gradient(
+                    to bottom,
+                    transparent,
+                    transparentize($dark, 0.5) 80%);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        text-wrap: wrap;
+        z-index: 2;
+        color: $white;
+        word-break: break-word;
+        > *:not([class^="ellipsis"]){
+            display: block;
+            width: 100%;
+        }
+        .fa-circle-plus{
+            opacity: 1;
+            color: $white;
+            position: absolute;
+            transition: $transition-base;
+        }
+    }
+    &:hover{
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 0;
+        &::before{
+            opacity: 1;
+            bottom: 50%;
+        }
+        &::after{
+            opacity: 1;
+        }
+        img{
+            transform: scale(1.2);
+        }
+        .hover-box-info{
+            .fa-circle-plus{
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            [class^="ellipsis"]{
+                display: block;
+            }
+        }
+    }
+}
+/* e: 호버 박스 */
+/* [MO] =================== */
+@include media-breakpoint-down(md){
+    $headerH: 50px;
+    $footerH: 113px;
+}

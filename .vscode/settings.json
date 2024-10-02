@@ -1,0 +1,52 @@
+{
+    "http.proxySupport": "off",
+    "terminal.integrated.localEchoLatencyThreshold": -1,
+    "terminal.integrated.localEchoEnabled": "off",
+    "workbench.colorTheme": "Dracula",
+    "editor.renderWhitespace": "all",
+    "editor.tabSize": 4,
+    "todohighlight.keywords": [
+        {
+            "text": "NOTE:",
+            "color": "#ffffff",
+            "backgroundColor": "deepskyblue",
+            "overviewRulerColor": "grey"
+        },
+        {
+            "text": "Vue:",
+            "color": "#ffffff",
+            "backgroundColor": "#42b883",
+            "overviewRulerColor": "grey"
+        },
+        {
+            "text": "Nuxt:",
+            "color": "#ffffff",
+            "backgroundColor": "#126842",
+            "overviewRulerColor": "grey"
+        },
+        {
+            "text": "Vite:",
+            "color": "#ffffff",
+            "backgroundColor": "#454ce1",
+            "overviewRulerColor": "grey"
+        },
+        {
+            "text": "React:",
+            "color": "#20232a",
+            "backgroundColor": "#61dafb",
+            "overviewRulerColor": "grey"
+        },
+        {
+            "text": "★",
+            "color": "red",
+            "backgroundColor": "yellow",
+            "overviewRulerColor": "grey"
+        },
+    ],
+    "[vue]": {
+        "editor.defaultFormatter": "Vue.volar"
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    }
+}
