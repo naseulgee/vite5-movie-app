@@ -11,8 +11,12 @@
 const axios = require('axios') // 패키지 사용 시 import 가 아닌 require 를 사용하여야 한다
 const { OMDB_API_KEY } = process.env
 
-exports.handler = async (request, context) => {
-    const payload = JSON.parse(request.body) // 문자열 -> 객체 데이터
+// Vite: 수정
+export default async function handler(request, response) {
+// exports.handler = async (request, context) => {
+    // Vite: 수정
+    // const payload = JSON.parse(request.body) // 문자열 -> 객체 데이터
+    const payload = await request.json() // 문자열 -> 객체 데이터
     // console.log(request) // 브라우저 콘솔이 아닌 터미널에서 출력된다
 
     // [참고] https://www.omdbapi.com/
@@ -29,19 +33,15 @@ exports.handler = async (request, context) => {
         const res = await axios.get(url)
         // 상태코드 200 이나, 에러인 경우 처리
         if(res.data.Error) {
-            return {
-                statusCode: 400,
-                body: res.data.Error,
-            }
+            // Vite: 수정
+            // return {
+            //     statusCode: 400,
+            //     body: res.data.Error,
+            // }
+            return new Response(res.data.Error, { status: 400 })
         }
-        return {
-            statusCode: 200,
-            body: JSON.stringify(res.data), // 객체 데이터 -> 문자열
-        }
+        return new Response(JSON.stringify(res.data), { status: 200 })
     } catch (error) {
-        return {
-            statusCode: error.response.status,
-            body: error.message,
-        }
+        return new Response(error.message, { status: error.response.status })
     }
 }
