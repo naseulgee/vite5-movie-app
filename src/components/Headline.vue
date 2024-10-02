@@ -46,7 +46,7 @@ export default {
 
 .intro {
     height: $vh-H;
-    background: url(~assets/images/main/main-bg.jpg) no-repeat center/cover;
+    background: url('@/assets/images/main/main-bg.jpg') no-repeat center/cover;
     &::before {
         display: block;
         content: "";

@@ -14,7 +14,7 @@
                 :size="3" />
             <img
                 v-if="noImage"
-                src="~/assets/images/common/404-img.jpg"
+                src="@/assets/images/common/404-img.jpg"
                 alt="No Poster"
                 class="w-100 h-100" />
             <img

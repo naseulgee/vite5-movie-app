@@ -177,7 +177,7 @@ export default {
             height: calc($posterW * 3 / 2);
             background: var(--bs-gray-200) no-repeat center/cover;
             &.noImage{
-                background-image: url('~assets/images/common/404-img.jpg') !important;
+                background-image: url('@/assets/images/common/404-img.jpg') !important;
             }
         }
         .specs{
