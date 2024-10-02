@@ -25,7 +25,9 @@ module.exports = {
     ],
     // 코드를 분석하는데 사용할 패키지 명시
     parserOptions: {
-        parser: "babel-eslint"
+        // Vite: 수정
+        ecmaVersion: 'latest'
+        // parser: "babel-eslint"
     },
     // extends 에서 지정한 규칙 외에 커스마이징 할 규칙 명시
     rules: {

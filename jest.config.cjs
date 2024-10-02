@@ -2,7 +2,7 @@
 
 module.exports = {
     // 파일 확장자를 지정하지 않은 경우 Jest 가 검색할 확장자 목록
-    moduleFileExtensions: [
+    "moduleFileExtensions": [ // Vite: key 값 쌍따옴표로 묶어주기
         'js',
         'vue',
     ],
@@ -10,6 +10,7 @@ module.exports = {
     moduleNameMapper: {
         // <rootDir> 토큰을 통해 루트 경로를 참조할 수 있다
         '^~/(.*)$': '<rootDir>/src/$1',
+        '^@/(.*)$': '<rootDir>/src/$1', // Vite: 추가
         // 정적 파일 매칭
         '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/__mocks__/fileMock.js',
         '\\.(s?css|less)$': '<rootDir>/__mocks__/styleMock.js', // 정상 처리를 원할 시 identity-obj-proxy 패키지 할당

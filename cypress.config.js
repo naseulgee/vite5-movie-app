@@ -8,9 +8,13 @@
  *      - cypress lifecycle의 특정 단계에 실행할 코드 작성, 동적으로 설정 구성 등을 작성할 수 있다.
  * support: plugins 처럼 각 테스트 파일 수행 전 실행된다. 예로 before나 beforeEach를 정의할 수 있다.
  */
-const { defineConfig } = require("cypress");
+// Vite: 수정
+import { defineConfig } from 'cypress'
+// const { defineConfig } = require("cypress");
 
-module.exports = defineConfig({
+// Vite: 수정
+export default defineConfig({
+// module.exports = defineConfig({
     // 환경 변수 로 설정할 값
     // env: {},
 
