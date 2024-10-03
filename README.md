@@ -359,3 +359,190 @@ npm i -D netlify-cli
 7. Deploys > 배포여부 확인 (`Published` 라벨)
 </details>
 <!-- end  : ================================================================ -->
+
+<!-- start  : ================================================================ -->
+# 🔍 속도 개선을 위한 Webpack → Vite 마이그레이션
+<details open>
+<summary>접기/펼치기</summary>
+
+## Vite 전환
+
+### 패키지 설치 및 세팅
+```
+npm create vue@latest
+npm i -D eslint eslint-plugin-vue # 생성문답 미 선택 시
+npm i vue-router@4                # 생성문답 미 선택 시
+npm i vuex@next pinia             # 생성문답 미 선택 시, 둘 중 하나만
+```
+1. 프로젝트 생성
+2. ESLint 패키지 설치
+    - eslint
+    - eslint-plugin-vue
+3. vue-router 패키지 설치
+    - vue-router@4
+4. store 관리를 위한 패키지 설치
+    - 둘 중 하나만 설치하면 되며, Vue3 이상부턴 pinia 가 권장된다
+    - vuex@next
+    - pinia
+5. 네트워크 통신 패키지 설치
+    - axios
+    - eslint
+    - eslint-plugin-vue
+6. CSS, SCSS를 위한 패키지 설치
+    - sass
+
+### 설정 파일 생성 및 수정
+1. index.html 파일 수정
+```
+    ....
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+    ....
+```
+2. .eslintrc.cjs 파일 수정
+```
+    ....
+    parserOptions: {
+        ecmaVersion: 'latest'
+    },
+    ....
+```
+3. cypress.config.js 파일 수정
+```
+    import { defineConfig } from 'cypress'
+
+    export default defineConfig({
+            ....
+    })
+```
+4. jest.config.cjs 파일 수정
+```
+    ....
+    "moduleFileExtensions": [ // Vite: key 값 쌍따옴표로 묶어주기
+        ....
+    ],
+    // 경로 별칭 매핑
+    moduleNameMapper: {
+        ....
+        '^@/(.*)$': '<rootDir>/src/$1', // Vite: 추가
+    },
+    ....
+```
+5. netlify.toml 파일 수정
+```
+    ....
+    [dev]
+        ....
+        command    = "npm run dev:vite"
+        ....
+```
+6. package.json 파일 수정
+```
+    ....
+    "type": "module",
+    "scripts": {
+        "dev": "netlify dev",
+        "dev:vite": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test:unit": "jest --watchAll",
+            "test:unit:silent": "jest --watchAll --silent",
+            "test:e2e": "start-server-and-test 'netlify dev --port 8080' http://localhost:8080 'cypress open --e2e'",
+            "test:e2e:headless": "start-server-and-test 'netlify dev --port 8080' http://localhost:8080 'cypress run --e2e'",
+    },
+    ....
+```
+    - 기존 package.json 파일 참고
+    - dependencies 내용 붙여 넣기
+    - devDependencies 내용 붙여 넣기 (아래 항목 제외)
+        - babel 관련 제외: Vite 는 Parcel 기반으로, Babel 없이도 변환됨(단, Jest 사용 시 설치 필요)
+            - @babel/core
+            - @babel/plugin-transform-runtime
+            - @babel/preset-env
+            - babel-eslint
+            - babel-jest
+            - babel-loader
+        - webpack 관련 제외
+            - @vue/compiler-sfc
+            - copy-webpack-plugin
+            - css-loader
+            - file-loader
+            - html-webpack-plugin
+            - postcss
+            - postcss-loader
+            - sass-loader
+            - style-loader
+            - dotenv-webpack
+            - vue-loader
+            - vue-style-loader
+            - webpack
+            - webpack-cli
+            - webpack-dev-server
+        - SCSS 관련 제외
+            - sass-loader
+    - browserslist 내용 붙여 넣기
+7. jsconfig.json 파일 수정
+8. vite.config.js 파일 수정
+### 파일 및 폴더 이관
+- /__mocks__         → 동일
+- /cypress           → 동일
+- /functions         → 동일
+- /src               → 동일
+- /static            → /public
+- /.babelrc.js       → 제거 (jest 사용 시 /babel.config.cjs)
+- /.env              → 동일
+- /.eslintrc.js      → /.eslintrc.cjs
+- /.postcssrc.js     → 제거 (vite.config.js 로 내용 이관)
+- /cypress.config.js → 동일
+- /index.html        → 동일
+- /jest.config.js    → /jest.config.cjs
+- /netlify.toml      → 동일
+- /package.json      → 동일
+- /webpack.config.js → 제거 (vite.config.js 로 내용 이관)
+### 명칭 변경
+- 환경변수 관련
+    - Vite 어플리케이션에 포함되지 않는 netlify 서버리스 함수는 해당 없음
+    - /.env 의 `VUE_APP_변수명` → `VITE_APP_변수명`
+    - `process.env.환경변수명`  → `import.meta.env.환경변수명`
+- import 관련
+    - scss, img 파일의                        import '~절대경로' → import '@절대경로'
+    - 경로 별칭이 포함된 동적 이미지 추가 용도의 `require`         → `computed`
+        <details>
+        <summary>예시</summary>
+
+        ```
+        <template v-for="변수 in 변수목록" :key="변수">
+            <img :src="require(`~/경로/${변수}`)" />
+        </template>
+        ```
+        ⇒
+        ```
+        <template v-for="변수 in 변수목록" :key="변수">
+            <img :src="imgList[변수]" />
+        </template>
+
+        <script>
+            computed: {
+                imgList() {
+                    const list = import.meta.glob('@/경로/*', { eager: true })
+                    return Object.fromEntries(
+                        Object.entries(imgList).map(([key, value]) => {
+                            const filenames = key.split('/')
+                            const filename = filenames[filenames.length - 1].split('.')[0]
+                            return [filename, value.default]
+                        })
+                    )
+                }
+            }
+        </script>
+        ```
+        </details>
+- 플러그인 관련
+    - `const { 모듈 } = require(패키지)` → `import { 모듈 } from '패키지'`
+    - `module.exports = { … }`          → `export default defineConfig({ … })`
+- 서버 API 관련
+    - `exports.handler = async (request, context) => { … }` → `export default async function handler(request, response) { … }`
+    - `JSON.parse(request.body)`                            → `await request.json()`
+    - 응답 값                                               → `return new Response(body, { status: 코드, … })`
+</detail>
+<!-- end  : ================================================================ -->
