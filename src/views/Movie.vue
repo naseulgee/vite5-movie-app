@@ -52,8 +52,14 @@
                             v-for="{ Source: name, Value: score } in theMovie.Ratings"
                             :key="name"
                             class="rating m-0 align-middle">
+                            <!-- Vite: 수정.
                             <img
                                 :src="require(`~/assets/images/movie/${name}.png`)"
+                                :alt="name"
+                                class="me-1" />
+                            -->
+                            <img
+                                :src="ratingImages[name]"
                                 :alt="name"
                                 class="me-1" />
                             <span>{{ score }}</span>
@@ -96,6 +102,17 @@ export default {
         }
     },
     computed: {
+        // Vite: require 사용 불가로 Vite 에서 제공하는 import.meta.glob 를 통해 이미지 전부 불러오기
+        ratingImages() {
+            const imgList = import.meta.glob('@/assets/images/movie/*.png', { eager: true })
+            return Object.fromEntries(
+                Object.entries(imgList).map(([key, value]) => {
+                    const filenames = key.split('/')
+                    const filename = filenames[filenames.length - 1].split('.')[0]
+                    return [filename, value.default]
+                })
+            )
+        },
         /** NOTE: Vuex Helpers
          * [참고 state    ] https://vuex.vuejs.org/guide/state.html#the-mapstate-helper
          * [참고 getters  ] https://vuex.vuejs.org/guide/getters.html#the-mapgetters-helper
